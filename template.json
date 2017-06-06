@@ -1,0 +1,474 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vm_jumpbox_name": {
+            "defaultValue": "jumpbox",
+            "type": "string"
+        },
+        "vm_remotebox_name": {
+            "defaultValue": "remotebox",
+            "type": "string"
+        },
+        "nic_remotebox_name": {
+            "defaultValue": "remoteboxnic",
+            "type": "string"
+        },
+        "nic_jumbox_name": {
+            "defaultValue": "jumpboxnic",
+            "type": "string"
+        },
+        "nsg_default_west": {
+            "defaultValue": "AllowSSHfromEast",
+            "type": "string"
+        },
+        "nsg_jumpbox_east": {
+            "defaultValue": "jumpbox-nsg",
+            "type": "string"
+        },
+        "pip_west_gw_name": {
+            "defaultValue": "WestUSGatewayPIP",
+            "type": "string"
+        },
+        "pip_east_gw_name": {
+            "defaultValue": "EastUSGatewayPIP",
+            "type": "string"
+        },
+        "pip_jumpbox_name": {
+            "defaultValue": "jumpbox-ip",
+            "type": "string"
+        },
+        "vnet_westus_name": {
+            "defaultValue": "WestUSNetwork",
+            "type": "string"
+        },
+        "vnet_eastus_name": {
+            "defaultValue": "EastUSNetwork",
+            "type": "string"
+        },
+        "gw_westus_name": {
+            "defaultValue": "WestUSNetworkGateway",
+            "type": "string"
+        },
+        "gw_eastus_name": {
+            "defaultValue": "EastUSNetworkGateway",
+            "type": "string"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "comments": "The JumpBox",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('vm_jumpbox_name')]",
+            "apiVersion": "2016-04-30-preview",
+            "location": "eastus",
+            "scale": null,
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_A1"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "OpenLogic",
+                        "offer": "CentOS",
+                        "sku": "7.3",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Linux",
+                        "name": "[concat(parameters('vm_jumpbox_name'),'_OsDisk')]",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "diskSizeGB": 31
+                    },
+                    "dataDisks": []
+                },
+                "osProfile": {
+                    "computerName": "[parameters('vm_jumpbox_name')]",
+                    "adminUsername": "azure",
+                    "adminPassword": "St@lllaBlu3s",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": false
+                    },
+                    "secrets": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('nic_jumbox_name'))]"
+                        }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('nic_jumbox_name'))]"
+            ]
+        },
+        {
+            "comments": "The RemoteBox",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('vm_remotebox_name')]",
+            "apiVersion": "2016-04-30-preview",
+            "location": "westus",
+            "scale": null,
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_A1"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "OpenLogic",
+                        "offer": "CentOS",
+                        "sku": "7.3",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Linux",
+                        "name": "[concat(parameters('vm_remotebox_name'),'_OsDisk_1_dade77fc0b7f4569821940c291442846')]",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "diskSizeGB": 31
+                    },
+                    "dataDisks": []
+                },
+                "osProfile": {
+                    "computerName": "[parameters('vm_remotebox_name')]",
+                    "adminUsername": "azure",
+                    "adminPassword": "St@lllaBlu3s",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": false
+                    },
+                    "secrets": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('nic_remotebox_name'))]"
+                        }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('nic_remotebox_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('nic_remotebox_name')]",
+            "apiVersion": "2017-03-01",
+            "location": "westus",
+            "scale": null,
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAddress": "192.168.0.4",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('vnet_westus_name')), '/subnets/default')]"
+                            }
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableIPForwarding": false
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnet_westus_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('nic_jumbox_name')]",
+            "apiVersion": "2017-03-01",
+            "location": "eastus",
+            "scale": null,
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAddress": "10.0.0.4",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('pip_jumpbox_name'))]"
+                            },
+                            "subnet": {
+                                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('vnet_eastus_name')), '/subnets/default')]"
+                            }
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableIPForwarding": false,
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsg_jumpbox_east'))]"
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('pip_jumpbox_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnet_eastus_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsg_jumpbox_east'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[parameters('nsg_default_west')]",
+            "apiVersion": "2017-03-01",
+            "location": "westus",
+            "scale": null,
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "AllowSSH",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "10.0.0.0/24",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound"
+                        }
+                    }
+                ]
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[parameters('nsg_jumpbox_east')]",
+            "apiVersion": "2017-03-01",
+            "location": "eastus",
+            "scale": null,
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-ssh",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1000,
+                            "direction": "Inbound"
+                        }
+                    }
+                ]
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[parameters('pip_west_gw_name')]",
+            "apiVersion": "2017-03-01",
+            "location": "westus",
+            "scale": null,
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic",
+                "idleTimeoutInMinutes": 4
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[parameters('pip_east_gw_name')]",
+            "apiVersion": "2017-03-01",
+            "location": "eastus",
+            "scale": null,
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic",
+                "idleTimeoutInMinutes": 4
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[parameters('pip_jumpbox_name')]",
+            "apiVersion": "2017-03-01",
+            "location": "eastus",
+            "scale": null,
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic",
+                "idleTimeoutInMinutes": 4
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('vnet_westus_name')]",
+            "apiVersion": "2017-03-01",
+            "location": "westus",
+            "scale": null,
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "192.168.0.0/16"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "default",
+                        "properties": {
+                            "addressPrefix": "192.168.0.0/24",
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsg_default_west'))]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "GatewaySubnet",
+                        "properties": {
+                            "addressPrefix": "192.168.100.0/24"
+                        }
+                    }
+                ],
+                "virtualNetworkPeerings": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsg_default_west'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('vnet_eastus_name')]",
+            "apiVersion": "2017-03-01",
+            "location": "eastus",
+            "scale": null,
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.0.0.0/16"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "default",
+                        "properties": {
+                            "addressPrefix": "10.0.0.0/24"
+                        }
+                    },
+                    {
+                        "name": "GatewaySubnet",
+                        "properties": {
+                            "addressPrefix": "10.0.100.0/24"
+                        }
+                    }
+                ],
+                "virtualNetworkPeerings": []
+            },
+            "dependsOn": []
+        },
+        {
+            "apiVersion": "2015-05-01-preview",
+            "type": "Microsoft.Network/virtualNetworkGateways",
+            "name": "[parameters('gw_westus_name')]",
+            "location": "westus",
+            "dependsOn": [
+                "[concat('Microsoft.Network/publicIPAddresses/', parameters('pip_west_gw_name'))]",
+                "[concat('Microsoft.Network/virtualNetworks/', parameters('vnet_westus_name'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',parameters('vnet_westus_name'),'GatewaySubnet')]"
+                            },
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('pip_west_gw_name'))]"
+                            }
+                        },
+                        "name": "westGatewayConfig"
+                    }
+                ],
+                "gatewayType": "Vpn",
+                "vpnType": "RouteBased",
+                "enableBgp": "false"
+            }
+        },
+        {
+            "apiVersion": "2015-05-01-preview",
+            "type": "Microsoft.Network/virtualNetworkGateways",
+            "name": "[parameters('gw_eastus_name')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[concat('Microsoft.Network/publicIPAddresses/', parameters('pip_east_gw_name'))]",
+                "[concat('Microsoft.Network/virtualNetworks/', parameters('vnet_eastus_name'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',parameters('vnet_eastus_name'),'GatewaySubnet')]"
+                            },
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('pip_east_gw_name'))]"
+                            }
+                        },
+                        "name": "eastGatewayConfig"
+                    }
+                ],
+                "gatewayType": "Vpn",
+                "vpnType": "RouteBased",
+                "enableBgp": "false"
+            }
+        },
+        {
+            "apiVersion": "2015-05-01-preview",
+            "name": "EastUSGateway-to-WestUSGatway",
+            "type": "Microsoft.Network/connections",
+            "location": "eastus",
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworkGateways/', parameters('gw_eastus_name'))]",
+                "[concat('Microsoft.Network/virtualNetworkGateways/', parameters('gw_westus_name'))]"
+            ],
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic",
+                "virtualNetworkGateway1": {
+                    "id": "[resourceid('Microsoft.Network/virtualNetworkGateways',parameters('gw_eastus_name'))]"
+                },
+                "virtualNetworkGateway2": {
+                    "id": "[resourceid('Microsoft.Network/virtualNetworkGateways',parameters('gw_westus_name'))]"
+                },
+                "connectionType": "Vnet2Vnet",
+                "routingWeight": 0,
+                "sharedKey": "sharedkey"
+            }
+        },
+        {
+            "apiVersion": "2015-05-01-preview",
+            "name": "WestUSGatway-to-EastUSGateway",
+            "type": "Microsoft.Network/connections",
+            "location": "westus",
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworkGateways/', parameters('gw_eastus_name'))]",
+                "[concat('Microsoft.Network/virtualNetworkGateways/', parameters('gw_westus_name'))]"
+            ],
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic",
+                "virtualNetworkGateway1": {
+                    "id": "[resourceid('Microsoft.Network/virtualNetworkGateways',parameters('gw_westus_name'))]"
+                },
+                "virtualNetworkGateway2": {
+                    "id": "[resourceid('Microsoft.Network/virtualNetworkGateways',parameters('gw_eastus_name'))]"
+                },
+                "connectionType": "Vnet2Vnet",
+                "routingWeight": 0,
+                "sharedKey": "sharedkey"
+            }
+        }
+    ]
+}
