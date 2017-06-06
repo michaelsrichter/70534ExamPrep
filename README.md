@@ -33,7 +33,7 @@ What resources did we create? You can look inside the template.json file, but yo
 * Let's investigate the address spaces for these networks. Type
 ```
 az network vnet show -n EastUSNetwork -g examprep101 | grep addressPrefix
-az network vnet show -n WestSNetwork -g examprep101 | grep addressPrefix
+az network vnet show -n WestUSNetwork -g examprep101 | grep addressPrefix
 ```
 * The networkInterface is where public and private IP addresses are configured.
 * We've also got 2 Network Security Groups. Let's check out the first one, type `az network nsg rule list --nsg-name jumpbox-nsg -g examprep101 -o table`
@@ -52,7 +52,7 @@ You'll see there is one rule defined. It allows inbount traffic on port 22 from 
 * Now, from inside the jumpbox, try reaching the remotebox. Type `ssh azure@<REMOTEBOX-PRIVATE-IP-ADDRESS>` and enter the same password.
 * Two things could have happened, if you are prompted for the password... congratulations, it worked! You successfully used a vnet-to-vnet connection to: SSH into the jumpbox in the East US and use a private IP address to SSH into a remote box that is not exposed to the internet and in a completely separate network thousands of miles away.
 * if this did NOT happen. There are a few reasons.
-  * You are super quick and the Gateways (which can 30+ minutes to provision) aren't ready yet. See if your deployment is still running with `az group deployment show -n mydeployment -g examprep102 | grep provisioning` (remember to `exit` if you are SSH'd into the jumpbox before running this example). If it says `Running` wait a few more minutes for it say `Succeeded`
+  * You are super quick and the Gateways (which can 30+ minutes to provision) aren't ready yet. See if your deployment is still running with `az group deployment show -n mydeployment -g examprep101 | grep provisioning` (remember to `exit` if you are SSH'd into the jumpbox before running this example). If it says `Running` wait a few more minutes for it say `Succeeded`
   * If you get a failure or you are not able to SSH into either machine, let me know by raising an issue here: https://github.com/michaelsrichter/70534ExamPrep/issues
 
 
