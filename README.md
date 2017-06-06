@@ -8,11 +8,15 @@ Read Me
 
 1. Go to https://portal.azure.com and log in. 
 2. Open the Cloud Shell by clicking the >_ symbol in the top right nav bar.
+![Cloud Shell](https://github.com/michaelsrichter/70534ExamPrep/raw/master/screenshots/CloudShellLink.PNG)
 3. You may be asked to create a Storage container so you can save your work between sessions. Say YES and continue. Don't worry, this will cost you fractions of pennies.
 4. When the shell loads, we'll go into our clouddrive so that anything we create will be saved between sessions.
-5. Type `cd clouddrive`
+5. Type `cd clouddrive`          
+![CD Clouddrive](https://github.com/michaelsrichter/70534ExamPrep/raw/master/screenshots/cd-clouddrive.PNG)
 6. Type `az group create -n examprep101 -l eastus` | This will create a new Resource Group in the East US. A resource group is a logical container that houses our resources in Azure. We can assign user or group permissions to individual resources or an entire resource group. All the resources we create in this step will live in resource group "examprep101." The Resource Group records will be stored in our "East US" Region datacenters. You can deploy resources to any of our regions inside the resource group, even though the records are hosted in East US. East US just holds the records for the resource group, not the resources themselves. As you will see, we will deploy resources that are deployed to both East US and our WEST US regions.
-7. If you did the previous step correctly, you will see this. If not, try again. :(
+7. If you did the previous step correctly, you will see this. 
+![Create Group](https://github.com/michaelsrichter/70534ExamPrep/raw/master/screenshots/resourcegroupcreated.PNG)
+If not, try again. :(
 8. Let's get the template we are going to deploy. Type: `wget https://raw.githubusercontent.com/michaelsrichter/70534ExamPrep/master/template.json` the Azure template file will download!
 9. We are going to deploy this template. It will do all the magic for us. Run the following command. It will take while, so I will explain what is happening afterwards. 
 Type: `az group deployment create -n mydeployment -g examprep101 --template-file template.json --no-wait`
@@ -26,7 +30,8 @@ Some of the resources we are provisioning can take a while, namely our vnet Gate
 
 If it says `Running` then we know it's not finished yet.
 
-What resources did we create? You can look inside the template.json file, but you can get a list from Azure as well: Type `az resource list -g examprep101 -o table`
+What resources did we create? You can look inside the template.json file, but you can get a list from Azure as well: Type `az resource list -g examprep101 -o table` It should look like this:
+![List All Resources](https://github.com/michaelsrichter/70534ExamPrep/raw/master/screenshots/allresources.PNG)
 * Notice the **Type** column. You see virtualMachines, disks and networkInterface types. These are for our VMs that we will log into. 
 * Notice that one set of VM resources is in East US and the other set is in West US.
 * You see we have 2 virtualNetwork resources as well. Also, one in the East and one in the West. Each VM is joined to each vnet via the networkInterface attached.
