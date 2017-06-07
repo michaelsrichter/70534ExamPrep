@@ -1,5 +1,3 @@
-Read Me
-
 # Azure VNET-to-VNET Connection Lab
 
 ## Summary
