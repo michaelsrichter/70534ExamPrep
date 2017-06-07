@@ -1,4 +1,4 @@
 # Labs
 
-* [vnet-to-vnet](http://github.com)
-* [point-to-site](http://github.com)
+* [vnet-to-vnet](https://github.com/michaelsrichter/70534ExamPrep/tree/master/Labs/vnet-to-vnet)
+* [point-to-site](https://github.com/michaelsrichter/70534ExamPrep/tree/master/Labs/point-to-site)
