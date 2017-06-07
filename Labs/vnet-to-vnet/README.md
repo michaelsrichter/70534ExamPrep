@@ -27,7 +27,7 @@ In this lab, we will create vnets in 2 different Azure regions; one in the East 
 7. If you did the previous step correctly, you will see this. 
 ![Create Group](https://github.com/michaelsrichter/70534ExamPrep/raw/master/screenshots/resourcegroupcreated.PNG)
 If not, try again. :(
-8. Let's get the template we are going to deploy. Type: `wget https://raw.githubusercontent.com/michaelsrichter/70534ExamPrep/master/template.json` the Azure template file will download!
+8. Let's get the template we are going to deploy. Type: `wget https://raw.githubusercontent.com/michaelsrichter/70534ExamPrep/master/Labs/vnet-to-vnet/template.json` the Azure template file will download!
 9. We are going to deploy this template. It will do all the magic for us. Run the following command. It will take while, so I will explain what is happening afterwards. 
 Type: `az group deployment create -n mydeployment -g examprep101 --template-file template.json --no-wait`
 
