@@ -1,3 +1,8 @@
+# Decks
+
+* [Design Azure Resouce Manager (ARM) networking]()
+* [Architect an Azure Compute infrastructure]()
+
 # Labs
 ### Design Azure Resource Manager (ARM) Networking
 
