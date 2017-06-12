@@ -1,6 +1,6 @@
 # Azure Point-to-Site Connection Lab
 
-## Summary
+### Summary
 
 In this lab, you will create a point-to-site connection from your computer to a network in Azure.
 
@@ -8,7 +8,7 @@ You will learn
 * How to set up Azure network resources in the Azure Portal
 * How to connect to Azure via a point-to-site connection
 
-## Lab Steps
+### Lab Steps
 
 1. Follow the steps [here](https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-howto-point-to-site-resource-manager-portal) to configure a point-to-site ocnnection.
 

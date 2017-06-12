@@ -1,6 +1,6 @@
 # Azure VNET-to-VNET Connection Lab
 
-## Summary
+### Summary
 
 In this lab, we will create vnets in 2 different Azure regions; one in the East US and the other in the West US. We will join them together with a vnet-to-vnet VPN connection. You will learn:
 * how to use the Azure CLI to create a template deployment,
@@ -10,9 +10,9 @@ In this lab, we will create vnets in 2 different Azure regions; one in the East 
 * network security groups, 
 * vnet gateways and vnet connections.
 
-## Lab Steps
+### Lab Steps
 
-### Set up
+#### Set up
 
 1. Go to https://portal.azure.com and log in. 
 2. Open the Cloud Shell by clicking the >_ symbol in the top right nav bar.
@@ -31,7 +31,7 @@ Type: `az group deployment create -n mydeployment -g examprep101 --template-file
 
 Great, we are done with setup!
 
-### Now what?
+#### Now what?
 OK, what did that deployment do? It created a new deployment of resources to Azure. We called it "mydeployment." We are deploying to our new resource group called "examprep101" and the resources we deployed are in the template.json file we just downloaded. 
 
 Some of the resources we are provisioning can take a while, namely our vnet Gateways. We can see the status of our deployment by typing `az group deployment show -n mydeployment -g examprep101 | grep provisioning`
@@ -66,9 +66,9 @@ You'll see there is one rule defined. It allows inbount traffic on port 22 from 
 * Two things could have happened, if you are prompted for the password... congratulations, it worked! You successfully used a vnet-to-vnet connection to: SSH into the jumpbox in the East US and use a private IP address to SSH into a remote box that is not exposed to the internet and in a completely separate network thousands of miles away.
 * if this did NOT happen. There are a few reasons.
   * You are super quick and the Gateways (which can 30+ minutes to provision) aren't ready yet. See if your deployment is still running with `az group deployment show -n mydeployment -g examprep101 | grep provisioning` (remember to `exit` if you are SSH'd into the jumpbox before running this example). If it says `Running` wait a few more minutes for it say `Succeeded`
-  * If you get a failure or you are not able to SSH into either machine, let me know by raising an issue here: https://github.com/michaelsrichter/70534ExamPrep/issues
+  * If you get a failure or you are not able to SSH into either machine, let me know by raising an issue [here](https://github.com/michaelsrichter/70534ExamPrep/issues).
 
-## Learn More
+### Learn More
 
 ..links coming soon.
 
