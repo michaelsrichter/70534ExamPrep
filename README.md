@@ -1,7 +1,7 @@
 # Decks
 
-* [Design Azure Resouce Manager (ARM) networking]()
-* [Architect an Azure Compute infrastructure]()
+* [Design Azure Resouce Manager (ARM) networking](https://github.com/michaelsrichter/70534ExamPrep/blob/master/Decks/70-534_NYC_Networking_Arch_Final.pptx)
+* [Architect an Azure Compute infrastructure](https://github.com/michaelsrichter/70534ExamPrep/blob/master/Decks/70-534_NYC_Compute_Arch_Final.pptx)
 
 # Labs
 ### Design Azure Resource Manager (ARM) Networking
