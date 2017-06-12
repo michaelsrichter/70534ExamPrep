@@ -7,7 +7,7 @@
 ### Architect an Azure Compute Infrastructure
 
 * [load balancer lab](https://github.com/michaelsrichter/70534ExamPrep/tree/master/Labs/loadbalancer)
-* [Traffic Manager lab](https://github.com/michaelsrichter/70534ExamPrep/tree/master/Labs/trafficmanagerr)
+* [Traffic Manager lab](https://github.com/michaelsrichter/70534ExamPrep/tree/master/Labs/trafficmanager)
 
 ### Links
 * 70-534 Exam Objectives: [https://www.microsoft.com/en-us/learning/exam-70-534.aspx#question-types](https://www.microsoft.com/en-us/learning/exam-70-534.aspx#question-types)
