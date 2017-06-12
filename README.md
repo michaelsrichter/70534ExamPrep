@@ -6,4 +6,4 @@
 
 ## Architect an Azure Compute Infrastructure
 
-* [load balancer lab](https://github.com/michaelsrichter/70534ExamPrep/tree/master/Labs/vnet-to-vnet)
+* [load balancer lab](https://github.com/michaelsrichter/70534ExamPrep/tree/master/Labs/loadbalancer)
